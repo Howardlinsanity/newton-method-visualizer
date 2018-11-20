@@ -1,14 +1,31 @@
 from scipy import misc 
+from math import *
 
-def f(x): 
-    return x**3
-
+'''
+    Calculates Delta of the function, which is the error
+    f: function that takes in an x
+    x: value
+'''
 def dx(f, x):
     return abs(0-f(x))
 
-def derivative(f,x):
-    return misc.derivative(f, x, dx=1e-6)
+'''
+    Calculates the dertivate of the function at x
+    f: function that takes in an x
+    x: value
 
+    NOTE: Currently this is using a library that approximates the derivative,
+    and is thus accurate to 12 decimal places at the moment.
+'''
+def derivative(f,x):
+    return misc.derivative(f, x, dx=1e-12)
+
+'''
+    Newton's Method - currently made this recursive due to simplicity, may need to convert to iterative in future
+    f: function that takes in an x
+    xi: value (x0 when initially called)
+    e: Maximum error (best if under 11 decimal places)
+'''
 def newtons_method(f,xi,e):
     delta = dx(f,xi) 
     if(delta < e):
@@ -19,10 +36,17 @@ def newtons_method(f,xi,e):
         delta = dx(f,xi)
         return newtons_method(f,xi,e)
 
-def f(x):
-    return 6*x**5-5*x**4-4*x**3+3*x**2
+def function_parser():
+    safe_list = ['acos', 'asin', 'atan', 'atan2', 'ceil', 'cos', 'cosh', 'degrees', 'e','exp','fabs', 'floor', 'fmod','frexp','hypot','ldexp', 'log', 'log10','modf', 'pi','pow', 'radians', 'sin', 'sinh', 'sqrt', 'tan','tanh']
+    safe_dict = dict([(k,locals().get(k,None)) for k in safe_list]) 
+    expr = input("Input function please: ")
+    def f(x):
+        safe_dict['x'] = x
+        return eval(expr, {"__builtins__":None},safe_dict)
+    return f
 
 if __name__ == "__main__":
-   x0s = [0,0.5,1]
-   for x in x0s:
-       print("Root: ", round(newtons_method(f,x,1e-5),4))
+    func = function_parser()
+    x0s = [0,0.5,1]
+    for x in x0s:
+        print("Root: ", round(newtons_method(func,x,1e-5),4))

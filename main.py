@@ -2,6 +2,8 @@ from scipy import misc
 from math import *
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.widgets import Button
+import time
 
 '''
     Calculates Delta of the function, which is the error
@@ -29,12 +31,16 @@ def derivative(f,x):
     e: Maximum error (best if under 11 decimal places)
 '''
 def newtons_method(f,xi,e):
+    tangents = []
     delta = dx(f,xi) 
     while(delta > e):
         df = derivative(f,xi)
         xi = xi - (f(xi)/df)
         delta = dx(f,xi)
-    return xi
+        def t(x):
+            return df * (x - xi) + f(x)
+        tangents.append(t)
+    return (xi, tangents)
 
 '''
     Will ask user for a function and then return said function as well as string representation
@@ -49,14 +55,21 @@ def function_parser():
     return (f, expr)
 
 if __name__ == "__main__":
-    (func, expr) = function_parser()
-    initial = int(input("Input initial point please: "))
-    root = round(newtons_method(func, initial,1e-11),4)
+    (f, expr) = function_parser()
+    xi = int(input("Input initial point please: "))
+    e = 1e-11
+    (root, tangents) = newtons_method(f,xi,e)
+    root = round(root, 4)
     print("Root: ", root)
-    x = np.arange(-2+root, 2+root, 0.01)
-    yvals = func(x)
-    plt.plot(x, yvals)
-    plt.axis([-2.0+root, 2.0+root, -4.0, 4.0])
+    x = np.arange(-10, 10, 0.01)
+    plt.plot(x, f(x))
+    delta = dx(f,xi) 
+    while(delta > e):
+        df = derivative(f,xi)
+        xi = xi - (f(xi)/df)
+        delta = dx(f,xi)
+        plt.plot(x,(df * (x - xi)) + f(xi),linestyle='dashed')
+    plt.axis([-10, 10, -10, 10])
     plt.axhline(0, color='black')
     plt.axvline(0, color='black')
     plt.title('Newtons Method')
@@ -64,3 +77,4 @@ if __name__ == "__main__":
     plt.ylabel('f(x)')
     plt.legend(['f(x) = '+ expr])
     plt.show()
+

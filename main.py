@@ -1,3 +1,7 @@
+'''
+Please read the README.md for guide and limitations of this program.
+Author: Howard Lin and Danny Lu
+'''
 from scipy import misc 
 from math import *
 import matplotlib.pyplot as plt

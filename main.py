@@ -66,6 +66,20 @@ if __name__ == "__main__":
     delta = dx(f,xi) 
     while(delta > e):
         df = derivative(f,xi)
+        if(df == 0):
+            plt.annotate('You selected an initial value that results in a division by zero', 
+                xy=(0, 0),  
+                xycoords='data',
+                textcoords='offset points',
+                xytext=(-130, 30),
+                arrowprops=dict(arrowstyle="->"))
+            plt.annotate('Please restart program and select different initial point.', 
+                xy=(0, 0),  
+                xycoords='data',
+                textcoords='offset points',
+                xytext=(-130, -30),
+                arrowprops=dict(arrowstyle="->"))
+            break
         xi = xi - (f(xi)/df)
         delta = dx(f,xi)
         plt.plot(x,(df * (x - xi)) + f(xi),linestyle='dashed')
@@ -76,5 +90,11 @@ if __name__ == "__main__":
     plt.xlabel('x')
     plt.ylabel('f(x)')
     plt.legend(['f(x) = '+ expr])
+    plt.annotate('Root approx. at ' + str(root), 
+             xy=(root, 0),  
+             xycoords='data',
+             textcoords='offset points',
+             xytext=(0, -50),
+             arrowprops=dict(arrowstyle="->"))
     plt.show()
 
